@@ -1,0 +1,26 @@
+# Secrets 
+.env
+.env.*
+!.env.exemple
+!.env.example
+
+# Outils locaux 
+.github/modernize/
+
+# VS Code : config perso ignorée, recommandations d'extensions partagées
+.vscode/*
+!.vscode/extensions.json
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Build / runtime 
+target/
+*.log
+logs/
+
+# Systèmes 
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,56 @@
+services:
+
+  db:
+    image: mariadb:lts
+    restart: always
+    environment:
+      MARIADB_DATABASE: kapture
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+      # Pour plus tard quand on aura un seed de données initiales
+      # - ./db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - db
+
+  # Optionnel : lancé seulement avec --profile api
+  # (sinon, lancer l'API en local avec ./mvnw spring-boot:run)
+  api:
+    build: ./api
+    profiles: [api]
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/kapture
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Pour plus tard avec un front React ou Vuejs
+  # front:
+  #   build: ./front
+  #   ports:
+  #     - "8081:80"
+  #   depends_on:
+  #     - api
+
+volumes:
+  db-data:
