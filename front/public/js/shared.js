@@ -7,7 +7,7 @@
 
 // true  = données locales, aucune requête réseau (développement sans API)
 // false = appels réels vers /api/* (relayés par Nginx vers api:8080)
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 // Laisser vide : le navigateur parle à Nginx (même origine, pas de CORS).
 const API_BASE = "";
