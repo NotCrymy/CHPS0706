@@ -66,7 +66,7 @@ Paramètres tous optionnels et cumulables :
 | `page` | | entier ≥ 0 | `0` |
 | `taille` | | entier 1…200 | `50` |
 
-Paramètre invalide → `400 {"message": "…"}` : « Paramètre de tri invalide : … », « Ordre de tri invalide : … », « Pagination invalide (taille max : 200). »
+Paramètre invalide → `400 {"message": "…"}` : « Paramètre de tri invalide : … », « Ordre de tri invalide : … », « Pagination invalide (taille max : 200). », « La date de début est invalide. », « La date de fin est invalide. », « Paramètre invalide : … » (paramètre mal typé).
 
 Réponse `200` :
 
@@ -107,6 +107,14 @@ Un seul format, quel que soit le cas :
 ```json
 { "message": "Le titre est obligatoire." }
 ```
+
+| Cas | Status | Message |
+| --- | --- | --- |
+| Violation Jakarta (format) | `400` | message de l'annotation concernée |
+| Règle métier (catégorie, pseudonyme, date, payload) | `400` | message du `BugService` |
+| Session inexistante | `404` | « Session inconnue. » |
+| Corps JSON illisible ou champ du mauvais type | `400` | « Corps JSON invalide. » |
+| Paramètre de requête mal typé | `400` | « Paramètre invalide : … » |
 
 Les réponses ne contiennent **jamais** de données nominatives (`testeur.nom`, `email`, `iban`, `date_naissance`, `region`) : les bugs ne portent que le pseudonyme (cloisonnement).
 
