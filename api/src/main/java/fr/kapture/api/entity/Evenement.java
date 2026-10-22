@@ -49,8 +49,8 @@ public class Evenement {
     @JoinColumn(name = "id_utilisateur", referencedColumnName = "pseudonyme", nullable = false)
     private Appariement utilisateur;
 
-    /** Bug rencontré : {@code BUG1} … {@code BUG5} (liste fermée). */
-    @Column(name = "titre", length = 20, nullable = false)
+    /** Libellé du bug rencontré, texte libre (100 caractères max). */
+    @Column(name = "titre", length = 100, nullable = false)
     private String titre;
 
     @Column(name = "description", length = 500)

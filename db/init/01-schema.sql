@@ -24,7 +24,7 @@ CREATE TABLE session (
 CREATE TABLE evenement (
   id              BIGINT AUTO_INCREMENT PRIMARY KEY,
   session_id      INT NOT NULL,
-  titre           VARCHAR(20) NOT NULL,      -- BUG1, BUG2, ...
+  titre           VARCHAR(100) NOT NULL,     -- libellé libre (BUG1, BUG2, ... dans le POC)
   id_utilisateur  VARCHAR(30) NOT NULL,      -- pseudonyme
   description     VARCHAR(500),
   payload         JSON,

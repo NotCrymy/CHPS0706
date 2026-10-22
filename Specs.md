@@ -198,6 +198,8 @@ Les scripts de `db/init/` ne s'exécutent qu'au premier démarrage du volume. To
 
 ## Routes API
 
+> **Note** : le contrat exact de l'API v1 (clés JSON ci-dessous, validation Jakarta, messages d'erreur en français) est figé dans [`API.md`](API.md), qui fait foi pour l'implémentation.
+
 Deux routes sont retenues. Toutes deux sont préfixées par `/api` et échangent du JSON.
 
 | Méthode | Route | Rôle | Réponse |
@@ -211,16 +213,18 @@ Chaque appel à `POST /api/sessions/{id}/bugs` porte les six champs suivants, to
 
 | Champ JSON | Type | Valeurs | Rôle |
 | --- | --- | --- | --- |
-| `titre` | texte, liste fermée | `BUG1` à `BUG5` | Bug rencontré, choisi par le testeur |
+| `titre` | texte libre, 100 caractères max | ex. `BUG1` à `BUG5` | Libellé du bug rencontré, choisi par le testeur |
 | `id_utilisateur` | texte | pseudonyme du testeur | Qui a rencontré le bug, jamais l'id nominatif |
 | `description` | texte, 500 caractères max | libre | Précision éventuelle |
 | `payload` | objet JSON | libre | État du jeu au moment du bug |
 | `timestamp` | date ISO 8601 avec millisecondes | ex. `2026-10-19T14:32:05.120Z` | Instant de l'événement, fourni par le client |
 | `type_bug` | texte, liste fermée | voir ci-dessous | Catégorie, choisie par le testeur |
 
-Un payload qui ne respecte pas ce format (champ manquant, valeur hors liste, `id_utilisateur` inconnu) est rejeté en `400`.
+Un payload qui ne respecte pas ce format (champ manquant, catégorie hors liste, `id_utilisateur` inconnu) est rejeté en `400`.
 
-**Valeurs de `titre` : dictionnaire des bugs du POC**
+**Titres du POC : dictionnaire d'analyse (non contraignant)**
+
+Les titres ci-dessous servent uniquement à l'analyse avantageux / désavantageux / neutre pendant le POC : `titre` est un libellé libre (100 caractères max) et l'API n'impose pas cette liste.
 
 | Titre | Nature | Effet dans le jeu |
 | --- | --- | --- |
@@ -265,7 +269,7 @@ Tous les paramètres sont optionnels et se combinent.
 | Paramètre | Exemple | Effet |
 | --- | --- | --- |
 | `type_bug` | `MAP` | Filtre sur la catégorie |
-| `titre` | `BUG1` | Filtre sur l'identifiant du bug |
+| `titre` | `BUG1` | Filtre sur le libellé du bug |
 | `id_utilisateur` | `Storm_X9` | Filtre sur un pseudonyme |
 | `session_id` | `42` | Filtre sur une session |
 | `depuis` / `jusqu_a` | `2026-10-19T00:00:00Z` | Bornes sur le `timestamp` |
@@ -330,7 +334,7 @@ CREATE TABLE session (
 CREATE TABLE evenement (
   id              BIGINT AUTO_INCREMENT PRIMARY KEY,
   session_id      INT NOT NULL,
-  titre           VARCHAR(20) NOT NULL,      -- BUG1, BUG2, ...
+  titre           VARCHAR(100) NOT NULL,     -- libellé libre (BUG1, BUG2, ... dans le POC)
   id_utilisateur  VARCHAR(30) NOT NULL,      -- pseudonyme
   description     VARCHAR(500),
   payload         JSON,
