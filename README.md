@@ -6,7 +6,7 @@ Projet de l'équipe **Maki**. POC : insertion de bugs par API dans une base cloi
 | --- | --- | --- |
 | Backend | Java 21 / Spring Boot | `api/` |
 | Base de données | MariaDB (+ Adminer) | `docker-compose.yml` |
-| Front-office | HTML / CSS / JS + Nginx | `front/` (à venir) |
+| Front-office | HTML / CSS / JS + Nginx | `front/` |
 
 ## Prérequis
 
@@ -26,9 +26,9 @@ Extensions VS Code conseillées :
 # 1. Variables d'environnement
 cp .env.exemple .env        # puis adapter les mots de passe
 
-# 2. Base de données (+ Adminer)
+# 2. Base de données (+ Adminer) et front
 docker compose pull
-docker compose up -d
+docker compose up -d --build
 
 # 3. API
 cd api
@@ -46,6 +46,24 @@ docker compose --profile api up -d --build
 ```
 
 Arrêter d'abord l'API locale si elle tourne (port 8080 partagé). Pour tout arrêter : `docker compose --profile api down`.
+
+## Front
+
+| URL | Page | Fichiers |
+| --- | --- | --- |
+| http://localhost:8081/ | Tableau de bord : liste des bugs, filtres, tri, pagination | `index.html`, `js/dashboard.js` |
+| http://localhost:8081/report/?session=1&user=Storm_X9 | Popup de signalement, ouverte par le jeu dans une iframe / webview | `report/index.html`, `js/report.js` |
+| http://localhost:8081/demo/ | Jeu factice qui ouvre le popup : sert à tester l'intégration | `demo/index.html`, `js/demo.js` |
+| http://localhost:8082/ | Adminer (serveur `db`) | — |
+
+Les deux pages ne partagent que `js/shared.js` (valeurs de la spec, appels API, mock). Le contrat entre le jeu et le popup (`postMessage`) est décrit en tête de `js/report.js`.
+
+**Mode démo.** Tant que l'API n'expose pas les routes, `USE_MOCK = true` dans `js/shared.js` : les bugs sont stockés dans le `localStorage` du navigateur, et un bug envoyé depuis le popup apparaît dans le tableau de bord. Passer à `false` pour appeler `/api/*`, relayé par Nginx vers :
+
+- `api:8080` par défaut (API lancée avec `--profile api`) ;
+- `host.docker.internal:8080` si `API_UPSTREAM=host.docker.internal:8080` dans `.env` (API lancée avec `./mvnw`).
+
+Sans Docker : `python -m http.server 8081 --directory front/public` suffit en mode démo.
 
 ## Commandes utiles
 

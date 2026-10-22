@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kapture Fairplay – Démo en jeu</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/demo.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Kapture Fairplay <span class="brand-tag">POC</span></div>
+    <nav class="topbar-nav" aria-label="Navigation">
+      <a href="../">Tableau de bord</a>
+      <a href="./" aria-current="page">Tester le popup en jeu</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Simulation d'un jeu</h1>
+    <p class="lead">
+      Cette page joue le rôle du jeu : elle ouvre le popup <code>/report/</code> dans une iframe,
+      lui transmet l'état du jeu et écoute ses messages. Déplace le joueur avec les flèches,
+      puis signale un bug (bouton ou touche <kbd>F2</kbd>).
+    </p>
+
+    <div class="game-controls">
+      <div class="field">
+        <label for="g-session">Session</label>
+        <input id="g-session" type="number" min="1" step="1" value="1">
+      </div>
+      <div class="field">
+        <label for="g-user">Pseudonyme du joueur</label>
+        <input id="g-user" type="text" maxlength="30" value="Storm_X9" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="g-niveau">Niveau</label>
+        <select id="g-niveau">
+          <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+        </select>
+      </div>
+      <button type="button" id="report-btn" class="btn btn-primary">Signaler un bug (F2)</button>
+    </div>
+
+    <div class="arena" id="arena" aria-label="Scène du jeu">
+      <div class="player" id="player"></div>
+      <div class="hud" id="hud"></div>
+    </div>
+
+    <div id="game-status" class="status" role="status" aria-live="polite"></div>
+
+    <h2>Messages reçus du popup</h2>
+    <ol id="message-log" class="message-log"></ol>
+  </main>
+
+  <script src="../js/demo.js"></script>
+</body>
+</html>

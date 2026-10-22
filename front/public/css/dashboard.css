@@ -10,9 +10,16 @@ body { background: var(--bg); }
   margin-left: 0.5rem; padding: 0.1rem 0.5rem; border-radius: 99px;
   background: var(--accent); font-size: 0.75rem; font-weight: 600;
 }
-.topbar-role { color: #C9D1DE; font-size: 0.9375rem; }
+.topbar-nav { display: flex; gap: 0.25rem; }
+.topbar-nav a {
+  color: #C9D1DE; text-decoration: none; padding: 0.4rem 0.9rem; border-radius: var(--radius);
+  border-bottom: 2px solid transparent;
+}
+.topbar-nav a:hover { color: #fff; }
+.topbar-nav a[aria-current="page"] { color: #fff; background: rgba(255, 255, 255, 0.12); border-bottom-color: #5FD1C8; }
 
 main { max-width: 1120px; margin: 0 auto; padding: 2rem clamp(1rem, 4vw, 2.5rem) 4rem; }
+.page-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; }
 h1 { font-size: 1.625rem; line-height: 1.2; margin: 0 0 0.25rem; }
 .lead { margin: 0; color: var(--muted); max-width: 64ch; }
 

@@ -24,7 +24,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8081:8081
+      - "8082:8080"   # Adminer écoute sur 8080 dans le conteneur ; 8081 est réservé au front
     depends_on:
       - db
 
@@ -44,13 +44,18 @@ services:
       db:
         condition: service_healthy
 
-  # Pour plus tard avec un front React ou Vuejs
-  # front:
-  #   build: ./front
-  #   ports:
-  #     - "8081:80"
-  #   depends_on:
-  #     - api
+  # Dashboard (/) + popup en jeu (/report/) + jeu de démo (/demo/), servis par Nginx.
+  # Pas de depends_on sur api : le front fonctionne seul en mode mock (USE_MOCK dans front/public/js/shared.js).
+  front:
+    build: ./front
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      # api:8080 = API lancée avec --profile api ; host.docker.internal:8080 = API lancée avec ./mvnw
+      API_UPSTREAM: ${API_UPSTREAM:-api:8080}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # déjà fourni par Docker Desktop, nécessaire sous Linux
 
 volumes:
   db-data:

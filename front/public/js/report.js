@@ -4,9 +4,13 @@
 
   Le jeu ouvre :  /report/?session=42&user=Storm_X9
   Le popup prévient le jeu par postMessage :
+  { source: "kapture-report", type: "ready" }           popup chargée, en attente de l'état du jeu
   { source: "kapture-report", type: "submitted", id }   bug envoyé
   { source: "kapture-report", type: "closed" }          popup fermée (annulée ou terminée)
-  Sans ces paramètres (test dans un navigateur), un panneau « Mode développement » apparaît. */
+  Le jeu répond à "ready" avec l'état du jeu, envoyé tel quel comme payload du bug :
+  { source: "kapture-game", type: "state", payload: { niveau: 3, position: { x: 120, y: 48 } } }
+  Sans les paramètres session/user (test dans un navigateur), un panneau « Mode développement » apparaît.
+  Exemple d'intégration : /demo/ */
 
 // Ajoute au payload des métriques de comportement (temps de réaction, etc.), invisibles pour le joueur.
 const COLLECT_BEHAVIOR = true;
@@ -23,6 +27,7 @@ const submitBtn = $("#submit-btn");
 fillSelect($("#f-titre"), TITRES.map((t) => ({ value: t, label: t })), "Choisir un bug");
 fillSelect($("#f-type"), TYPES_BUG, "Choisir une catégorie");
 $("#dev-panel").hidden = inGame;
+$("#f-titre").focus();
 
 function notifyGame(type, detail = {}) {
   if (window.parent !== window) {
@@ -31,13 +36,28 @@ function notifyGame(type, detail = {}) {
   }
 }
 
+// État du jeu au moment de l'ouverture, fourni par le jeu en réponse à "ready".
+let gameState = {};
+window.addEventListener("message", (e) => {
+  const msg = e.data;
+  if (e.source !== window.parent || !msg || msg.source !== "kapture-game") return;
+  if (msg.type === "state" && typeof msg.payload === "object" && msg.payload !== null && !Array.isArray(msg.payload)) {
+    gameState = msg.payload;
+  }
+});
+notifyGame("ready");
+
 /* ── Fermeture ── */
 function closePopup() {
   notifyGame("closed");
   if (window.parent === window) {      // test hors du jeu : on remet simplement à zéro
     form.reset();
+    form.querySelectorAll(".invalid").forEach((field) => markInvalid(field, false));
     $("#desc-counter").textContent = "0 / 500";
     clearStatus(formStatus);
+    form.hidden = false;
+    $("#done").hidden = true;
+    resetBehavior();
   }
 }
 $("#close-x").addEventListener("click", closePopup);
@@ -50,7 +70,11 @@ $("#f-description").addEventListener("input", (e) => {
 });
 
 /* ── Métriques de comportement ── */
-const behavior = { ouvertA: performance.now(), premiereSaisieA: null, modifications: 0, ordreSaisie: [] };
+let behavior;
+function resetBehavior() {
+  behavior = { ouvertA: performance.now(), premiereSaisieA: null, modifications: 0, ordreSaisie: [] };
+}
+resetBehavior();
 
 form.addEventListener("input", (e) => {
   const name = e.target.name;
@@ -97,8 +121,8 @@ form.addEventListener("submit", async (e) => {
     check($("#f-pseudo"), pseudo.length > 0 && pseudo.length <= 30, "Indique un pseudonyme (30 caractères max).");
   }
 
-  // Dans le jeu, le payload (état du jeu) sera fourni par le jeu ; ici seulement en mode développement.
-  let payload = {};
+  // Dans le jeu, le payload (état du jeu) est fourni par le jeu ; sinon saisi dans le panneau de développement.
+  let payload = inGame ? gameState : {};
   if (!inGame) {
     const rawPayload = $("#f-payload").value.trim();
     if (rawPayload) {
