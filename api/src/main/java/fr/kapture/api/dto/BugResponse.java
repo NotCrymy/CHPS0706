@@ -2,6 +2,7 @@ package fr.kapture.api.dto;
 
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fr.kapture.api.entity.Evenement;
@@ -27,7 +28,8 @@ public record BugResponse(
 
         @JsonProperty("payload") JsonNode payload,
 
-        /** ISO 8601 avec millisecondes, ex. {@code 2026-10-19T14:32:05.120Z}. */
+        /** ISO 8601 UTC, millisecondes toujours présentes : {@code 2026-10-19T14:32:05.120Z}. */
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
         @JsonProperty("timestamp") Instant timestamp,
 
         @JsonProperty("type_bug") String typeBug
