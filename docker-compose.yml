@@ -12,7 +12,7 @@ services:
       - "3306:3306"
     volumes:
       - db-data:/var/lib/mysql
-      # Pour plus tard quand on aura un seed de données initiales
+      # Schéma et seed joués au premier démarrage
       - ./db/init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
