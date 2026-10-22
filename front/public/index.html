@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kapture Fairplay – Bugs</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Kapture Fairplay <span class="brand-tag">POC</span></div>
+    <nav class="tabs" aria-label="Navigation principale">
+      <a href="#signaler" id="tab-signaler">Signaler un bug</a>
+      <a href="#dashboard" id="tab-dashboard">Tableau de bord</a>
+    </nav>
+  </header>
+
+  <p id="mock-banner" class="banner" hidden>
+    Mode démo : les données sont locales et aucune requête n'est envoyée à l'API.
+    ->Passer <code>USE_MOCK</code> à <code>false</code> dans <code>js/app.js</code> pour brancher le backend.
+  </p>
+
+  <main>
+    <!-- ───────────── Formulaire de signalement ───────────── -->
+    <section id="view-signaler" aria-labelledby="h-signaler">
+      <h1 id="h-signaler">Signaler un bug</h1>
+      <p class="lead">Décris le bug que tu viens de rencontrer pendant ta session de jeu.</p>
+
+      <form id="bug-form" novalidate>
+        <div class="grid">
+          <div class="field">
+            <label for="f-session">Numéro de session</label>
+            <input id="f-session" name="session" type="number" min="1" step="1" value="1" required>
+          </div>
+          <div class="field">
+            <label for="f-pseudo">Pseudonyme</label>
+            <input id="f-pseudo" name="id_utilisateur" type="text" maxlength="30" autocomplete="off" placeholder="Storm_X9" required>
+          </div>
+          <div class="field">
+            <label for="f-titre">Bug rencontré</label>
+            <select id="f-titre" name="titre" required></select>
+          </div>
+          <div class="field">
+            <label for="f-type">Catégorie</label>
+            <select id="f-type" name="type_bug" required></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-description">Description <span class="hint">(facultatif)</span></label>
+          <textarea id="f-description" name="description" rows="4" maxlength="500"></textarea>
+          <div class="counter" id="desc-counter" aria-live="off">0 / 500</div>
+        </div>
+
+        <details class="advanced">
+          <summary>Avancé : état du jeu (payload JSON)</summary>
+          <div class="field">
+            <label for="f-payload" class="sr-only">Payload JSON</label>
+            <textarea id="f-payload" name="payload" rows="5" spellcheck="false">{ "niveau": 3, "position": { "x": 120, "y": 48 } }</textarea>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button type="submit" id="submit-btn" class="btn btn-primary">Envoyer le bug</button>
+        </div>
+        <div id="form-status" class="status" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <!-- ───────────── Tableau de bord ───────────── -->
+    <section id="view-dashboard" aria-labelledby="h-dashboard" hidden>
+      <h1 id="h-dashboard">Tableau de bord</h1>
+
+      <form id="filters" class="filters" novalidate>
+        <div class="field">
+          <label for="flt-type">Catégorie</label>
+          <select id="flt-type"></select>
+        </div>
+        <div class="field">
+          <label for="flt-titre">Bug</label>
+          <select id="flt-titre"></select>
+        </div>
+        <div class="field">
+          <label for="flt-pseudo">Pseudonyme</label>
+          <input id="flt-pseudo" type="text" maxlength="30" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="flt-taille">Lignes par page</label>
+          <select id="flt-taille">
+            <option>10</option><option selected>20</option><option>50</option><option>100</option>
+          </select>
+        </div>
+        <button type="button" id="flt-reset" class="btn">Réinitialiser</button>
+      </form>
+
+      <div id="dash-status" class="status" role="status" aria-live="polite"></div>
+
+      <div class="table-wrap">
+        <table id="bugs-table">
+          <thead>
+            <tr>
+              <th scope="col" data-col="titre"><button type="button" class="sort" data-sort="titre">Bug</button></th>
+              <th scope="col" data-col="type_bug"><button type="button" class="sort" data-sort="type_bug">Catégorie</button></th>
+              <th scope="col" data-col="id_utilisateur"><button type="button" class="sort" data-sort="id_utilisateur">Pseudonyme</button></th>
+              <th scope="col">Description</th>
+              <th scope="col" data-col="timestamp"><button type="button" class="sort" data-sort="timestamp">Date</button></th>
+            </tr>
+          </thead>
+          <tbody id="bugs-body"></tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <button type="button" id="prev-btn" class="btn">Précédent</button>
+        <span id="page-info" aria-live="polite"></span>
+        <button type="button" id="next-btn" class="btn">Suivant</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

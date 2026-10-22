@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signaler un bug</title>
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/popup.css">
+</head>
+<body>
+  <div class="popup" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+
+    <form id="report-form" novalidate>
+      <div class="popup-head">
+        <div>
+          <h1 id="popup-title">Un problème dans le jeu ?</h1>
+          <p class="lead">Dis-nous ce que tu viens de voir.</p>
+        </div>
+        <button type="button" id="close-x" class="icon-btn" aria-label="Fermer">×</button>
+      </div>
+
+      <div class="field">
+        <label for="f-titre">Bug rencontré</label>
+        <select id="f-titre" name="titre" required></select>
+      </div>
+      <div class="field">
+        <label for="f-type">Catégorie</label>
+        <select id="f-type" name="type_bug" required></select>
+      </div>
+      <div class="field">
+        <label for="f-description">Description <span class="hint">(facultatif)</span></label>
+        <textarea id="f-description" name="description" rows="3" maxlength="500"></textarea>
+        <div class="counter" id="desc-counter">0 / 500</div>
+      </div>
+
+      <!-- Visible uniquement hors du jeu (quand ?session= et ?user= ne sont pas fournis) -->
+      <fieldset id="dev-panel" class="dev" hidden>
+        <legend>Mode développement</legend>
+        <div class="row">
+          <div class="field">
+            <label for="f-session">Session</label>
+            <input id="f-session" name="session" type="number" min="1" step="1" value="1">
+          </div>
+          <div class="field">
+            <label for="f-pseudo">Pseudonyme</label>
+            <input id="f-pseudo" name="user" type="text" maxlength="30" autocomplete="off" placeholder="Storm_X9">
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-payload">État du jeu (payload JSON)</label>
+          <textarea id="f-payload" rows="3" spellcheck="false">{ "niveau": 3, "position": { "x": 120, "y": 48 } }</textarea>
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="button" id="cancel-btn" class="btn">Annuler</button>
+        <button type="submit" id="submit-btn" class="btn btn-primary">Envoyer</button>
+      </div>
+      <div id="form-status" class="status" role="status" aria-live="polite"></div>
+    </form>
+
+    <div id="done" class="done" hidden>
+      <h1>Merci !</h1>
+      <p class="lead">Ton signalement a bien été envoyé.</p>
+      <button type="button" id="done-btn" class="btn btn-primary">Retourner au jeu</button>
+    </div>
+
+  </div>
+
+  <script src="./js/shared.js"></script>
+  <script src="./js/report.js"></script>
+</body>
+</html>

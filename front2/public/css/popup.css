@@ -1,0 +1,35 @@
+/* Fond semi-transparent : dans le jeu, la webview s'affiche par-dessus la scène. */
+html, body { height: 100%; }
+body {
+  background: rgba(10, 14, 24, 0.72);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+
+.popup {
+  width: 100%; max-width: 440px; max-height: 100%; overflow-y: auto;
+  background: var(--surface); border-radius: 10px; padding: 1.4rem 1.5rem 1.5rem;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+.popup-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+h1 { font-size: 1.25rem; line-height: 1.25; margin: 0 0 0.25rem; }
+.lead { margin: 0 0 1.25rem; color: var(--muted); font-size: 0.9375rem; }
+
+.icon-btn {
+  font: inherit; font-size: 1.5rem; line-height: 1; cursor: pointer;
+  background: none; border: 0; color: var(--muted); padding: 0.1rem 0.4rem; border-radius: var(--radius);
+}
+.icon-btn:hover { background: #F0F2F5; color: var(--ink); }
+
+.actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 0.5rem; }
+
+.dev {
+  border: 1px dashed var(--line-strong); border-radius: var(--radius);
+  padding: 0.75rem 0.9rem 0.25rem; margin: 0 0 1.1rem;
+}
+.dev legend { padding: 0 0.4rem; font-size: 0.8125rem; color: var(--muted); }
+.dev .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 0.9rem; }
+#f-payload { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.8125rem; }
+
+.done { text-align: center; padding: 0.5rem 0 0; }
+.done .btn { margin-top: 1rem; }
